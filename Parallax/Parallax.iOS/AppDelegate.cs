@@ -25,6 +25,8 @@ namespace Parallax.iOS
             global::Xamarin.Forms.Forms.Init();
             LoadApplication(new App());
 
+            app.SetStatusBarHidden(true, UIStatusBarAnimation.None);
+
             return base.FinishedLaunching(app, options);
         }
     }
