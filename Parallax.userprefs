@@ -1,6 +1,13 @@
 ﻿<Properties StartupItem="Parallax/Parallax.iOS/Parallax.iOS.csproj">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhoneSimulator" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.IPhone5s.8.3" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Parallax/Parallax.iOS/ParallaxPageRenderer.cs">
+    <Files>
+      <File FileName="Parallax/Parallax/ParallaxPage.cs" Line="7" Column="6" />
+      <File FileName="Parallax/Parallax/App.cs" Line="36" Column="15" />
+      <File FileName="Parallax/Parallax.iOS/ParallaxPageRenderer.cs" Line="22" Column="31" />
+      <File FileName="Parallax/Parallax.iOS/Main.cs" Line="17" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>

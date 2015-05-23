@@ -18,16 +18,21 @@ namespace Parallax
                 "dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip " +
                 "ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore " +
                 "eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia " +
-                "deserunt mollit anim id est laborum."
+                "deserunt mollit anim id est laborum.",
+                TextColor = Color.Blue
             };
 
             label.FontSize = Device.GetNamedSize(NamedSize.Large, label);
 
-            MainPage = new ParallalPage
+            var grid = new Grid();
+            grid.Children.Add(label);
+
+            MainPage = new ParallaxPage
             {
-                ScrollContent = label,
+                Content = grid,
                 ImageSource = "r2d2.jpg",
-                BackgroundColor = Color.White
+                BackgroundColor = Color.White,
+                Padding = new Thickness(0, Device.OnPlatform(20, 0, 0), 0, 0)
             };
         }
 
