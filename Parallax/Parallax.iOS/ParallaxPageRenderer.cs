@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using Xamarin.Forms.Platform.iOS;
 using UIKit;
 using Xamarin.Forms;
@@ -10,16 +11,17 @@ using Parallax;
 
 namespace Parallax.iOS
 {
-    public class ParallaxPageRenderer : PageRenderer
+    public sealed class ParallaxPageRenderer : PageRenderer
     {
-        private UIView _view;
-        private UIImageView _imageView;
-        private UIScrollView _scrollView;
-        private UIView _imageBackground;
-        private UIView _scrollContent;
+        private readonly UIView _view;
+        private readonly UIImageView _imageView;
+        private readonly UIScrollView _scrollView;
+        private readonly UIView _imageBackground;
+        private readonly UIView _scrollContent;
         private UIView _nativeView;
-        private UIView _statusBarView;
+        private readonly UIView _statusBarView;
         private View _content;
+        private IVisualElementRenderer _renderer;
 
         public ParallaxPageRenderer()
         {
@@ -71,7 +73,7 @@ namespace Parallax.iOS
             await LayoutViewsAsync();
         }
 
-        protected ParallaxPage ParallaxPage { get; private set; }
+        private ParallaxPage ParallaxPage { get; set; }
 
         protected override async void OnElementChanged(VisualElementChangedEventArgs e)
         {
@@ -101,7 +103,7 @@ namespace Parallax.iOS
 
         private void AddContentRenderer()
         {
-            var renderer = RendererFactory.GetRenderer(_content);
+            _renderer = RendererFactory.GetRenderer(_content);
 
             if (_nativeView != null)
                 _nativeView.RemoveFromSuperview();
@@ -109,17 +111,28 @@ namespace Parallax.iOS
             if (_content == null)
                 return;
             
-            _nativeView = renderer.NativeView;
+            _nativeView = _renderer.NativeView;
             _scrollContent.Add(_nativeView);
+
+            var type = Type.GetType("Xamarin.Forms.Platform.iOS.Platform,Xamarin.Forms.Platform.iOS");
+            if (type != null)
+            {
+                var field = type.GetField("RendererProperty", BindingFlags.Static | BindingFlags.Public);
+
+                if (field != null)
+                {
+                    _content.SetValue((BindableProperty)field.GetValue(null), _renderer);
+                }
+            }
 
             LayoutContent();
         }
 
         private async void OnPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == ParallaxPage.PaddingProperty.PropertyName ||
+            if (e.PropertyName == Page.PaddingProperty.PropertyName ||
                 e.PropertyName == ParallaxPage.ImageSourceProperty.PropertyName ||
-                e.PropertyName == ParallaxPage.BackgroundColorProperty.PropertyName)
+                e.PropertyName == VisualElement.BackgroundColorProperty.PropertyName)
             {
                 await LayoutViewsAsync();
             }
@@ -145,11 +158,12 @@ namespace Parallax.iOS
             var size = _renderer.GetDesiredSize(View.Frame.Width, 0);
 
             _nativeView.Frame = new CGRect(new CGPoint(0, 0), new CGSize(width, size.Request.Height));
+            _content.Layout(_nativeView.Bounds.ToRectangle());
 
             _scrollContent.Frame = new CGRect(new CGPoint(0, _imageView.Frame.Height),
                 new CGSize(width, _nativeView.Frame.Height));
 
-            _scrollView.ContentSize = new CGSize(width, _scrollContent.Frame.Bottom);
+            _scrollView.ContentSize = new CGSize(width, _scrollContent.Frame.Bottom + ParallaxPage.Padding.Top);
         }
 
         private async Task LayoutViewsAsync()

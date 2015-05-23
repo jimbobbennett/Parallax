@@ -23,13 +23,10 @@ namespace Parallax
             };
 
             label.FontSize = Device.GetNamedSize(NamedSize.Large, label);
-
-            var grid = new Grid();
-            grid.Children.Add(label);
-
+            
             MainPage = new ParallaxPage
             {
-                Content = grid,
+                Content = label,
                 ImageSource = "r2d2.jpg",
                 BackgroundColor = Color.White,
                 Padding = new Thickness(0, Device.OnPlatform(20, 0, 0), 0, 0)
