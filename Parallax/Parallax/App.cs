@@ -23,11 +23,27 @@ namespace Parallax
             };
 
             label.FontSize = Device.GetNamedSize(NamedSize.Large, label);
-            
-            MainPage = new ParallaxPage
+
+            var contentView = new ContentView {Content = label, Padding = new Thickness(10)};
+
+            //MainPage = new ParallaxPage
+            //{
+            //    //Content = label,
+            //    Content = contentView,
+            //    ImageSource = "r2d2.JPG",
+            //    BackgroundColor = Color.White,
+            //    Padding = new Thickness(0, Device.OnPlatform(20, 0, 0), 0, 0)
+            //};
+
+            MainPage = new ContentPage
             {
-                Content = label,
-                ImageSource = "r2d2.jpg",
+                Content = new ParallaxView
+                {
+                    //Content = label,
+                    Content = contentView,
+                    ImageSource = "r2d2.JPG",
+                    BackgroundColor = Color.White
+                },
                 BackgroundColor = Color.White,
                 Padding = new Thickness(0, Device.OnPlatform(20, 0, 0), 0, 0)
             };

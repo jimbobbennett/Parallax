@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Reflection;
 using Xamarin.Forms.Platform.iOS;
 using UIKit;
@@ -7,11 +8,11 @@ using System.Threading.Tasks;
 using CoreGraphics;
 using Parallax;
 
-[assembly: ExportRenderer(typeof(ParallaxPage), typeof(Parallax.iOS.ParallaxPageRenderer))]
+[assembly: ExportRenderer(typeof(ParallaxView), typeof(Parallax.iOS.ParallaxViewRenderer))]
 
 namespace Parallax.iOS
 {
-    public sealed class ParallaxPageRenderer : PageRenderer
+    public sealed class ParallaxViewRenderer : ViewRenderer<ParallaxView, UIView>
     {
         private readonly UIView _view;
         private readonly UIImageView _imageView;
@@ -23,7 +24,7 @@ namespace Parallax.iOS
         private View _content;
         private IVisualElementRenderer _renderer;
 
-        public ParallaxPageRenderer()
+        public ParallaxViewRenderer()
         {
             _imageView = new UIImageView();
             _imageBackground = new UIView{ BackgroundColor = UIColor.Black };
@@ -48,8 +49,6 @@ namespace Parallax.iOS
             _view.Add(_imageView);
             _view.Add(_statusBarView);
             _view.Add(_scrollView);
-
-            View = _view;
         }
 
         void ScrollViewScrolled(object sender, EventArgs e)
@@ -59,46 +58,29 @@ namespace Parallax.iOS
             var opacity = ((float) _imageView.Frame.Height - (offSet/2f))/_imageView.Frame.Height;
             _imageView.Alpha = (float)Math.Min(Math.Max(0, opacity), 1);
 
-            var top = ParallaxPage.Padding.Top - (offSet / ParallaxPage.ParallaxRate);
-            _imageView.Frame = new CGRect(new CGPoint(0, top), 
+            _imageView.Frame = new CGRect(new CGPoint(0, 0), 
                 _imageView.Frame.Size);
 
             _imageBackground.Frame = _imageView.Frame;
         }
 
-        public override async void ViewDidLayoutSubviews()
+        public override async void LayoutSubviews()
         {
-            base.ViewDidLayoutSubviews();
+            base.LayoutSubviews();
 
             await LayoutViewsAsync();
         }
 
-        private ParallaxPage ParallaxPage { get; set; }
-
-        protected override async void OnElementChanged(VisualElementChangedEventArgs e)
+        protected override async void OnElementChanged(ElementChangedEventArgs<ParallaxView> e)
         {
-            if (e.OldElement != null)
-            {
-                e.OldElement.PropertyChanged -= OnPropertyChanged;
-
-                if (_nativeView != null)
-                    _nativeView.RemoveFromSuperview();
-            }
-
             base.OnElementChanged(e);
 
-            ParallaxPage = e.NewElement as ParallaxPage;
+            SetNativeControl(_view);
+            _content = Element.Content;
 
-            if (ParallaxPage != null)
-            {
-                ParallaxPage.PropertyChanged += OnPropertyChanged;
+            AddContentRenderer();
 
-                _content = ParallaxPage.Content;
-
-                AddContentRenderer();
-
-                await LayoutViewsAsync();
-            }
+            await LayoutViewsAsync();
         }
 
         private void AddContentRenderer()
@@ -131,10 +113,10 @@ namespace Parallax.iOS
             LayoutContent();
         }
 
-        private async void OnPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        protected override async void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == Page.PaddingProperty.PropertyName ||
-                e.PropertyName == ParallaxPage.ImageSourceProperty.PropertyName ||
+                e.PropertyName == ParallaxView.ImageSourceProperty.PropertyName ||
                 e.PropertyName == VisualElement.BackgroundColorProperty.PropertyName)
             {
                 await LayoutViewsAsync();
@@ -142,7 +124,7 @@ namespace Parallax.iOS
 
             if (e.PropertyName == "Content")
             {
-                _content = ParallaxPage.Content;
+                _content = Element.Content;
                 
                 AddContentRenderer();
             }
@@ -153,12 +135,12 @@ namespace Parallax.iOS
             if (_nativeView == null)
                 return;
 
-            var width = View.Frame.Width;
+            var width = Control.Frame.Width;
 
             if (width == 0)
                 return;
 
-            var size = _renderer.GetDesiredSize(View.Frame.Width, double.PositiveInfinity);
+            var size = Control.GetSizeRequest(Control.Frame.Width, double.PositiveInfinity);
 
             _nativeView.Frame = new CGRect(new CGPoint(0, 0), new CGSize(width, size.Request.Height));
             _content.Layout(_nativeView.Bounds.ToRectangle());
@@ -166,36 +148,36 @@ namespace Parallax.iOS
             _scrollContent.Frame = new CGRect(new CGPoint(0, _imageView.Frame.Height),
                 new CGSize(width, _nativeView.Frame.Height));
 
-            _scrollView.ContentSize = new CGSize(width, _scrollContent.Frame.Bottom + ParallaxPage.Padding.Top);
+            _scrollView.ContentSize = new CGSize(width, _scrollContent.Frame.Bottom);
         }
 
         private async Task LayoutViewsAsync()
         {
-            if (ParallaxPage == null)
+            if (Element == null)
                 return;
 
-            _statusBarView.BackgroundColor = ParallaxPage.BackgroundColor.ToUIColor();
-            _scrollContent.BackgroundColor = ParallaxPage.BackgroundColor.ToUIColor();
+            _statusBarView.BackgroundColor = Element.BackgroundColor.ToUIColor();
+            _scrollContent.BackgroundColor = Element.BackgroundColor.ToUIColor();
 
-            if (ParallaxPage.BackgroundColor == Color.Transparent)
+            if (Element.BackgroundColor == Color.Transparent)
                 _statusBarView.BackgroundColor = UIColor.White;
 
             _statusBarView.Frame = new CGRect(new CGPoint(0, 0),
-                new CGSize(_view.Frame.Width, ParallaxPage.Padding.Top));
+                new CGSize(_view.Frame.Width, 0));
 
-            _imageView.Image = await GetImageFromImageSourceAsync(ParallaxPage.ImageSource);
+            _imageView.Image = await GetImageFromImageSourceAsync(Element.ImageSource);
 
-            var width = View.Frame.Width;
+            var width = Control.Frame.Width;
             var scaleFactor = _imageView == null || _imageView.Image == null ? 0 : width / _imageView.Image.Size.Width;
 
-            var topPoint = new CGPoint(0, ParallaxPage.Padding.Top);
+            var topPoint = new CGPoint(0, 0);
 
             _imageView.Frame = new CGRect(topPoint,
                 new CGSize(width, _imageView == null || _imageView.Image == null ? 0 : _imageView.Image.Size.Height * scaleFactor));
             
             _imageBackground.Frame = _imageView.Frame;
                         
-            _scrollView.Frame = new CGRect(topPoint, new CGSize(width, View.Frame.Height));
+            _scrollView.Frame = new CGRect(topPoint, new CGSize(width, Control.Frame.Height));
 
             LayoutContent();
            
