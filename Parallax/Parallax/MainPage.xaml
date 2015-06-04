@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:parallax="clr-namespace:Parallax;assembly=Parallax"
+             x:Class="Parallax.MainPage">
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="*" />
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+
+    <Grid BackgroundColor="Red" Grid.Row="0" Grid.Column="0" HeightRequest="20"/>
+    <Grid BackgroundColor="Green" Grid.Row="0" Grid.Column="1" HeightRequest="20"/>
+
+    <parallax:ParallaxView Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0"
+                           ImageSource="r2d2.JPG" ParallaxRate="3" >
+      <ContentView>
+        <Label FontSize="Large" Text="{Binding Path=Text}" BackgroundColor="White"/>
+      </ContentView>
+    </parallax:ParallaxView>
+    
+    <Grid BackgroundColor="Blue" Grid.Row="2" Grid.Column="0" HeightRequest="20"/>
+    <Grid BackgroundColor="Yellow" Grid.Row="2" Grid.Column="1" HeightRequest="20"/>
+
+  </Grid>
+</ContentPage>

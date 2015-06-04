@@ -75,7 +75,6 @@ namespace Parallax.iOS
         {
             base.OnElementChanged(e);
 
-            SetNativeControl(_view);
             _content = Element.Content;
 
             AddContentRenderer();
@@ -95,8 +94,9 @@ namespace Parallax.iOS
 
             if (_content == null)
                 return;
-            
+
             _nativeView = _renderer.NativeView;
+            SetNativeControl(_view);
             _scrollContent.Add(_nativeView);
 
             var type = Type.GetType("Xamarin.Forms.Platform.iOS.Platform,Xamarin.Forms.Platform.iOS");
@@ -115,6 +115,8 @@ namespace Parallax.iOS
 
         protected override async void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            base.OnElementPropertyChanged(sender, e);
+
             if (e.PropertyName == Page.PaddingProperty.PropertyName ||
                 e.PropertyName == ParallaxView.ImageSourceProperty.PropertyName ||
                 e.PropertyName == VisualElement.BackgroundColorProperty.PropertyName)
@@ -135,14 +137,15 @@ namespace Parallax.iOS
             if (_nativeView == null)
                 return;
 
-            var width = Control.Frame.Width;
+            var width = _view.Frame.Width;
 
             if (width == 0)
                 return;
 
-            var size = Control.GetSizeRequest(Control.Frame.Width, double.PositiveInfinity);
+            var rendererSize = _renderer.GetDesiredSize(width, double.PositiveInfinity);
+            var size = _content.GetSizeRequest(width, double.PositiveInfinity);
 
-            _nativeView.Frame = new CGRect(new CGPoint(0, 0), new CGSize(width, size.Request.Height));
+            _nativeView.Frame = new CGRect(new CGPoint(0, 0), new CGSize(width, Math.Max(size.Request.Height, rendererSize.Request.Height)));
             _content.Layout(_nativeView.Bounds.ToRectangle());
 
             _scrollContent.Frame = new CGRect(new CGPoint(0, _imageView.Frame.Height),

@@ -30,11 +30,33 @@ namespace Parallax
             get { return _content; }
             set
             {
+                if (_content != null)
+                {
+                    _content.BindingContext = null;
+                    OnChildRemoved(_content);
+                }
+
                 if (_content == value) return;
 
                 _content = value;
 
+                if (_content != null)
+                {
+                    _content.BindingContext = BindingContext;
+                    OnChildAdded(_content);
+                }
+
                 OnPropertyChanged();
+            }
+        }
+
+        protected override void OnBindingContextChanged()
+        {
+            if (_content != null)
+            {
+                OnChildRemoved(_content);
+                _content.BindingContext = BindingContext;
+                OnChildAdded(_content);
             }
         }
     }

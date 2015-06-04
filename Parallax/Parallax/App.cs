@@ -35,18 +35,18 @@ namespace Parallax
             //    Padding = new Thickness(0, Device.OnPlatform(20, 0, 0), 0, 0)
             //};
 
-            MainPage = new ContentPage
-            {
-                Content = new ParallaxView
-                {
-                    //Content = label,
-                    Content = contentView,
-                    ImageSource = "r2d2.JPG",
-                    BackgroundColor = Color.White
-                },
-                BackgroundColor = Color.White,
-                Padding = new Thickness(0, Device.OnPlatform(20, 0, 0), 0, 0)
-            };
+            MainPage = new MainPage();
+            //{
+            //    Content = new ParallaxView
+            //    {
+            //        //Content = label,
+            //        Content = contentView,
+            //        ImageSource = "r2d2.JPG",
+            //        BackgroundColor = Color.White
+            //    },
+            //    BackgroundColor = Color.White,
+            //    Padding = new Thickness(0, Device.OnPlatform(20, 0, 0), 0, 0)
+            //};
         }
 
         protected override void OnStart()
