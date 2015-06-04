@@ -17,8 +17,7 @@
     <Grid BackgroundColor="Red" Grid.Row="0" Grid.Column="0" HeightRequest="20"/>
     <Grid BackgroundColor="Green" Grid.Row="0" Grid.Column="1" HeightRequest="20"/>
 
-    <parallax:ParallaxView Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0"
-                           ImageSource="r2d2.JPG" ParallaxRate="3" >
+    <parallax:ParallaxView Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0" ImageSource="r2d2.JPG">
       <ContentView>
         <Label FontSize="Large" Text="{Binding Path=Text}" BackgroundColor="White"/>
       </ContentView>

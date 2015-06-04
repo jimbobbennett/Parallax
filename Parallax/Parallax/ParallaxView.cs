@@ -19,8 +19,17 @@ namespace Parallax
 
         public float ParallaxRate
         {
-            get { return (float) GetValue(ParallaxRateProperty); }
+            get { return (float)GetValue(ParallaxRateProperty); }
             set { SetValue(ParallaxRateProperty, value); }
+        }
+
+        public static readonly BindableProperty FadeProperty =
+            BindableProperty.Create<ParallaxView, bool>(p => p.Fade, true);
+
+        public bool Fade
+        {
+            get { return (bool)GetValue(FadeProperty); }
+            set { SetValue(FadeProperty, value); }
         }
 
         private View _content;

@@ -38,8 +38,8 @@ namespace Parallax.iOS
             };
 
             _statusBarView = new UIView();
-            
-            _view = new UIView();
+
+            _view = new UIView { ClipsToBounds = true };
             _scrollContent = new UIView();
 
             _scrollView.Scrolled += ScrollViewScrolled;
@@ -53,15 +53,25 @@ namespace Parallax.iOS
 
         void ScrollViewScrolled(object sender, EventArgs e)
         {
+            SetImageAlpha();
+
             var offSet = (float)Math.Max(0f, (_scrollView.ContentOffset.Y));
+            var top = -1 * (offSet/Element.ParallaxRate);
+
+            _imageView.Frame = new CGRect(new CGPoint(0, top),_imageView.Frame.Size);
+            _imageBackground.Frame = _imageView.Frame;
+        }
+
+        private void SetImageAlpha()
+        {
+            var offSet = (float) Math.Max(0f, (_scrollView.ContentOffset.Y));
 
             var opacity = ((float) _imageView.Frame.Height - (offSet/2f))/_imageView.Frame.Height;
-            _imageView.Alpha = (float)Math.Min(Math.Max(0, opacity), 1);
 
-            _imageView.Frame = new CGRect(new CGPoint(0, 0), 
-                _imageView.Frame.Size);
-
-            _imageBackground.Frame = _imageView.Frame;
+            if (Element.Fade)
+                _imageView.Alpha = (float) Math.Min(Math.Max(0, opacity), 1);
+            else
+                _imageView.Alpha = 1f;
         }
 
         public override async void LayoutSubviews()
@@ -127,9 +137,11 @@ namespace Parallax.iOS
             if (e.PropertyName == "Content")
             {
                 _content = Element.Content;
-                
                 AddContentRenderer();
             }
+
+            if (e.PropertyName == "Fade")
+                SetImageAlpha();
         }
 
         private void LayoutContent()
