@@ -12,19 +12,25 @@
       <RowDefinition Height="Auto" />
       <RowDefinition Height="*" />
       <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
 
     <Grid BackgroundColor="Red" Grid.Row="0" Grid.Column="0" HeightRequest="20"/>
     <Grid BackgroundColor="Green" Grid.Row="0" Grid.Column="1" HeightRequest="20"/>
 
-    <parallax:ParallaxView Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0" ImageSource="r2d2.JPG">
+    <parallax:ParallaxView Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0" ImageSource="r2d2.JPG" Fade="{Binding Path=Fade}"
+                           ParallaxRate="{Binding Path=FloatRate}">
       <ContentView>
         <Label FontSize="Large" Text="{Binding Path=Text}" BackgroundColor="White"/>
       </ContentView>
     </parallax:ParallaxView>
     
-    <Grid BackgroundColor="Blue" Grid.Row="2" Grid.Column="0" HeightRequest="20"/>
-    <Grid BackgroundColor="Yellow" Grid.Row="2" Grid.Column="1" HeightRequest="20"/>
+    <Label Grid.Row="2" Grid.Column="0" Text="Fade" />
+    <Switch Grid.Row="2" Grid.Column="1" IsToggled="{Binding Path=Fade}"/>
+
+    <Label Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Text="Rate" />
+    <Slider Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0" Maximum="5" Value="{Binding Path=Rate, Mode=TwoWay}" />
 
   </Grid>
 </ContentPage>

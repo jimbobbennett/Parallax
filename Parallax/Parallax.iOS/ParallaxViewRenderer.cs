@@ -54,11 +54,15 @@ namespace Parallax.iOS
         void ScrollViewScrolled(object sender, EventArgs e)
         {
             SetImageAlpha();
+            SetImagePosition();
+        }
 
-            var offSet = (float)Math.Max(0f, (_scrollView.ContentOffset.Y));
-            var top = -1 * (offSet/Element.ParallaxRate);
+        private void SetImagePosition()
+        {
+            var offSet = (float) Math.Max(0f, (_scrollView.ContentOffset.Y));
+            var top = Element.ParallaxRate <= 1 ? 0 : -1*(offSet/Element.ParallaxRate);
 
-            _imageView.Frame = new CGRect(new CGPoint(0, top),_imageView.Frame.Size);
+            _imageView.Frame = new CGRect(new CGPoint(0, top), _imageView.Frame.Size);
             _imageBackground.Frame = _imageView.Frame;
         }
 
@@ -140,8 +144,11 @@ namespace Parallax.iOS
                 AddContentRenderer();
             }
 
-            if (e.PropertyName == "Fade")
+            if (e.PropertyName == ParallaxView.FadeProperty.PropertyName)
                 SetImageAlpha();
+
+            if (e.PropertyName == ParallaxView.ParallaxRateProperty.PropertyName)
+                SetImagePosition();
         }
 
         private void LayoutContent()
