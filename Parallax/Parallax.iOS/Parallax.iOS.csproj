@@ -108,7 +108,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <ITunesArtwork Include="iTunesArtwork" />
     <ITunesArtwork Include="iTunesArtwork%402x" />
-    <Compile Include="ParallaxPageRenderer.cs" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

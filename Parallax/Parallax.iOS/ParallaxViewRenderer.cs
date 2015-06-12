@@ -182,7 +182,10 @@ namespace Parallax.iOS
             _scrollContent.BackgroundColor = Element.BackgroundColor.ToUIColor();
 
             if (Element.BackgroundColor == Color.Transparent)
+            {
                 _statusBarView.BackgroundColor = UIColor.White;
+                _scrollContent.BackgroundColor = Color.Default.ToUIColor();
+            }
 
             _statusBarView.Frame = new CGRect(new CGPoint(0, 0),
                 new CGSize(_view.Frame.Width, 0));

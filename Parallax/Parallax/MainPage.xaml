@@ -21,9 +21,9 @@
 
     <parallax:ParallaxView Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0" ImageSource="r2d2.JPG" Fade="{Binding Path=Fade}"
                            ParallaxRate="{Binding Path=FloatRate}">
-      <ContentView>
-        <Label FontSize="Large" Text="{Binding Path=Text}" BackgroundColor="White"/>
-      </ContentView>
+      <!--<ContentView>-->
+        <Label FontSize="Large" Text="{Binding Path=Text}"/>
+      <!--</ContentView>-->
     </parallax:ParallaxView>
     
     <Label Grid.Row="2" Grid.Column="0" Text="Fade" />
