@@ -21,9 +21,24 @@
 
     <parallax:ParallaxView Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0" ImageSource="r2d2.JPG" Fade="{Binding Path=Fade}"
                            ParallaxRate="{Binding Path=FloatRate}">
-      <!--<ContentView>-->
-        <Label FontSize="Large" Text="{Binding Path=Text}"/>
-      <!--</ContentView>-->
+      
+
+		<Grid BackgroundColor="White">
+		    <Grid.ColumnDefinitions>
+		      <ColumnDefinition Width="20" />
+		      <ColumnDefinition Width="*" />
+		      <ColumnDefinition Width="20" />
+		    </Grid.ColumnDefinitions>
+		    <Grid.RowDefinitions>
+		      <RowDefinition Height="20" />
+		      <RowDefinition Height="Auto" />
+		      <RowDefinition Height="20" />
+		      <RowDefinition Height="Auto" />
+		    </Grid.RowDefinitions>
+
+			<Image Source="XamarinLogo.png" Grid.Row="1" Grid.Column="1"/>
+        	<Label FontSize="Large" Text="{Binding Path=Text}" Grid.Row="3" Grid.Column="1"/>
+        </Grid>
     </parallax:ParallaxView>
     
     <Label Grid.Row="2" Grid.Column="0" Text="Fade" />
